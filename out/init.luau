@@ -81,6 +81,28 @@ function Plugin:build(scheduler: any)
 
 	local jabbyScheduler = Jabby.scheduler.create()
 	local systemToId = {}
+	local addSystem = scheduler.addSystem
+
+	-- Planck 1.x keeps only its built-in fields in _systemInfo. Capture custom
+	-- SystemTable metadata after registration and immediately refresh Jabby.
+	scheduler.addSystem = function(self: any, system: any, phase: any)
+		local result = addSystem(self, system, phase)
+
+		if type(system) == "table" then
+			local systemInfo = self._systemInfo[system.system]
+			if systemInfo then
+				systemInfo.category = system.category
+				systemInfo.subcategory = system.subcategory
+
+				local id = systemToId[system.system]
+				if id then
+					jabbyScheduler:set_system_data(id, toJabbyData(self, systemInfo))
+				end
+			end
+		end
+
+		return result
+	end
 
 	for systemFn, systemInfo in scheduler._systemInfo do
 		local id = jabbyScheduler:register_system(toJabbyData(scheduler, systemInfo))

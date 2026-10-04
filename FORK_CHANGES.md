@@ -22,6 +22,11 @@ jabbyScheduler:register_system({
 
 This mapping is applied consistently when existing systems are discovered, new systems are added, and systems are replaced.
 
+Planck 1.x normally drops custom `SystemTable` fields while registering a
+system. Because the adapter is installed before registration, it captures
+`category` and `subcategory` automatically and refreshes Jabby's metadata.
+Consumers do not need an additional binding call.
+
 ## Automatic schedule labels
 
 The adapter inspects Planck's event dependency graphs and supplies every
