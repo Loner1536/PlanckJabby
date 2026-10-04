@@ -1,5 +1,5 @@
 local TS = _G[script]
-local Jabby = TS.import(script, TS.getModule(script, "@rbxts", "jabby").out)
+local Jabby = TS.import(script, TS.getModule(script, "@rbxts", "jabby"))
 
 type SystemInfo = {
 	category: string?,
