@@ -32,6 +32,7 @@ This adapter translates Planck scheduler metadata into the generic hierarchy use
 Planck phase   -> Jabby category
 system category -> Jabby subcategory
 system name    -> Jabby system
+Planck event   -> Jabby schedule label
 ```
 
 For example, a `FirstPerson` system in Planck's `Visual` phase and `Camera` category renders as:
@@ -39,7 +40,7 @@ For example, a `FirstPerson` system in Planck's `Visual` phase and `Camera` cate
 ```text
 Visual
 └── Camera
-    └── FirstPerson
+    └── FirstPerson (PreRender)
 ```
 
 See [FORK_CHANGES.md](./FORK_CHANGES.md) for a focused list of differences from the original adapter.

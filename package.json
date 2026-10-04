@@ -1,6 +1,6 @@
 {
   "name": "@rbxts/planck-jabby",
-  "version": "1.0.0-fork.1",
+  "version": "1.0.0-fork.2",
   "description": "Planck 1.x adapter for the Loner1536 Jabby fork",
   "private": true,
   "main": "out/init.lua",

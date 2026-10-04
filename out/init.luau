@@ -30,10 +30,45 @@ Plugin.__index = Plugin
 
 local n = 0
 
-local function toJabbyData(systemInfo: SystemInfo)
+local function containsPhase(dependency: any, phase: any): boolean
+	if dependency == phase then return true end
+	if type(dependency) ~= "table" or dependency._type ~= "pipeline" then return false end
+
+	for _, child in dependency.dependencyGraph.nodes do
+		if containsPhase(child, phase) then return true end
+	end
+
+	return false
+end
+
+local function resolveSchedules(scheduler: any, phase: any): {string}?
+	local schedules = {}
+
+	for identifier, dependencyGraph in scheduler._eventDependencyGraphs do
+		local contains = false
+		for _, dependency in dependencyGraph.nodes do
+			if containsPhase(dependency, phase) then
+				contains = true
+				break
+			end
+		end
+
+		if not contains then continue end
+		local schedule = string.match(identifier, "@([^@]+)$")
+		if schedule and not table.find(schedules, schedule) then
+			table.insert(schedules, schedule)
+		end
+	end
+
+	table.sort(schedules)
+	return if #schedules > 0 then schedules else nil
+end
+
+local function toJabbyData(scheduler: any, systemInfo: SystemInfo)
 	return {
 		category = tostring(systemInfo.phase),
 		subcategory = systemInfo.category,
+		schedules = resolveSchedules(scheduler, systemInfo.phase),
 		name = systemInfo.name,
 	}
 end
@@ -48,14 +83,14 @@ function Plugin:build(scheduler: any)
 	local systemToId = {}
 
 	for systemFn, systemInfo in scheduler._systemInfo do
-		local id = jabbyScheduler:register_system(toJabbyData(systemInfo))
+		local id = jabbyScheduler:register_system(toJabbyData(scheduler, systemInfo))
 		systemToId[systemFn] = id
 	end
 
 	scheduler:_addHook(
 		scheduler.Hooks.SystemAdd,
 		function(info: SystemsAddRemove)
-			local id = jabbyScheduler:register_system(toJabbyData(info.system))
+			local id = jabbyScheduler:register_system(toJabbyData(scheduler, info.system))
 			systemToId[info.system.system] = id
 		end
 	)
@@ -77,7 +112,7 @@ function Plugin:build(scheduler: any)
 			jabbyScheduler:remove_system(systemToId[oldSystem])
 			systemToId[oldSystem] = nil
 
-			local id = jabbyScheduler:register_system(toJabbyData(info.new))
+			local id = jabbyScheduler:register_system(toJabbyData(scheduler, info.new))
 			systemToId[newSystem] = id
 		end
 	)

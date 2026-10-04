@@ -22,9 +22,24 @@ jabbyScheduler:register_system({
 
 This mapping is applied consistently when existing systems are discovered, new systems are added, and systems are replaced.
 
-## Planned schedule labels
+## Automatic schedule labels
 
-Schedule labels such as `PreRender` and `Heartbeat` are intentionally not described as released behavior yet. When implemented, this document should record the exact metadata contract and automatic Planck event discovery behavior.
+The adapter inspects Planck's event dependency graphs and supplies every
+system with the event names associated with its phase:
+
+```luau
+{
+    category = "Visual",
+    subcategory = "Camera",
+    name = "FirstPerson",
+    schedules = { "PreRender" }
+}
+```
+
+Phases nested inside pipelines are resolved recursively. If a phase belongs to
+multiple event graphs, the adapter supplies every distinct event name in sorted
+order. Systems in Planck's default, manually-run graph receive no schedule
+label.
 
 ## Distribution
 
