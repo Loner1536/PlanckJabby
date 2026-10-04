@@ -55,3 +55,5 @@ The repository is packaged at its root so Bun can install it directly:
 ```
 
 The package retains the standard `@rbxts/planck-jabby` dependency key and import path inside consuming projects.
+Jabby is a peer dependency so Git branch installs cannot create a stale nested
+copy; applications provide their single top-level `@rbxts/jabby` installation.

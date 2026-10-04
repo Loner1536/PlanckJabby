@@ -17,9 +17,7 @@
   },
   "license": "ISC",
   "peerDependencies": {
+    "@rbxts/jabby": "*",
     "@rbxts/planck": "^1.0.0"
-  },
-  "dependencies": {
-    "@rbxts/jabby": "github:Loner1536/jabby#main"
   }
 }
