@@ -20,6 +20,6 @@
     "@rbxts/planck": "^1.0.0"
   },
   "dependencies": {
-    "@rbxts/jabby": "github:Loner1536/jabby#2afedd4"
+    "@rbxts/jabby": "github:Loner1536/jabby#d74fd61"
   }
 }
